@@ -1,15 +1,14 @@
+const regISO8601 = /(\d{4})-(\d{2})-(\d{2})T(\d{2})\:(\d{2})\:(\d{2})/
+
 class Client {
   #date = undefined
-  constructor({time}={}) {
-    if (time) { // 有值
-      if (/(\d{4})-(\d{2})-(\d{2})T(\d{2})\:(\d{2})\:(\d{2})/.test(time)) { // 并且格式正确
-        this.#date = new Date(time)
-      } else { // 格式不正确抛错
-        throw new TypeError('time format wrong')
-      }
-    } else { // 没有则取初始时的值
-      this.#date = new Date()
-    }
+  constructor({ time } = {}) {
+    if (!time) { // 没有设置, 取当前时间
+      this.#date = new Date() 
+      return
+    } 
+    if (!regISO8601.test(time)) throw new TypeError('time format wrong') // 时间格式不正确 抛错
+    this.#date = new Date(time)
   }
   getGreeting() {
     const hoursNow = this.#date.getHours()
@@ -18,7 +17,6 @@ class Client {
     return 'Good evening'
   }
 }
-
 
 const MyGreeter = {
   Client
